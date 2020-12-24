@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   void initState() {
     super.initState();
+
+    //No Firebase App '[DEFAULT]' has been created - (Error Solved)->call Firebase.initializeApp() in Flutter and Firebase
+    future: Firebase.initializeApp();
 
     controller = AnimationController(
       duration: Duration(seconds: 1),
