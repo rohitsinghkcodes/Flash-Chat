@@ -30,10 +30,9 @@ class _ChatScreenState extends State<ChatScreen> {
       final user = await _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
-        print(loggedInUser);
       }
     }catch(e){
-      print('catchingerror: $e');
+      print(e);
     }
   }
 
@@ -41,15 +40,19 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         leading: null,
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
                 //Implement logout functionality
+                _auth.signOut();
+                Navigator.pop(context);
+
               }),
         ],
-        title: Text('⚡️Chat'),
+        title: Center(child: Text('⚡️Chat',),),
         backgroundColor: Colors.lightBlueAccent,
       ),
       body: SafeArea(
