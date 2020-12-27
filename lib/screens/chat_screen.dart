@@ -38,14 +38,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   //To retrieve the messages from the firestore using Streams
-  void messagesStreams() async{
-    await for(var snapshots in _fireStore.collection('messages').snapshots())
-      {
-        for (var message in snapshots.documents)
-          {
-            print(message.data());
-          }
+  void messagesStreams() async {
+    await for (var snapshots in _fireStore.collection('messages').snapshots()) {
+      for (var message in snapshots.documents) {
+        print(message.data());
       }
+    }
   }
 
   @override
@@ -60,7 +58,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 //Implement logout functionality
                 _auth.signOut();
                 Navigator.pop(context);
-
               }),
         ],
         title: Center(
@@ -75,6 +72,26 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+              stream: _fireStore.collection('messages').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final messages = snapshot.data.docs;
+                  List<Text> messageWidgets = [];
+                  for (var msg in messages) {
+                    final messageText = msg.data()['text'];
+                    final messageSender = msg.data()['sender'];
+
+                    final messageWidget =
+                        Text('$messageText from $messageSender');
+                    messageWidgets.add(messageWidget);
+                  }
+                  return Column(
+                    children: messageWidgets,
+                  );
+                }
+              },
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
