@@ -22,14 +22,11 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     getCurrentUser();
   }
 
   //To check weather the user is signed in
   void getCurrentUser() async {
-
-
     try {
       final user = await _auth.currentUser;
       if (user != null) {
@@ -38,6 +35,17 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  //To retrieve the messages from the firestore using Streams
+  void messagesStreams() async{
+    await for(var snapshots in _fireStore.collection('messages').snapshots())
+      {
+        for (var message in snapshots.documents)
+          {
+            print(message.data());
+          }
+      }
   }
 
   @override
@@ -52,6 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 //Implement logout functionality
                 _auth.signOut();
                 Navigator.pop(context);
+
               }),
         ],
         title: Center(
