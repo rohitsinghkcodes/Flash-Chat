@@ -14,9 +14,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
-  final _fireStore = Firestore.instance;
-  // ignore: deprecated_member_use
-  FirebaseUser loggedInUser;
+  final _fireStore = FirebaseFirestore.instance;
+  User loggedInUser;
   String msgText;
 
   @override
@@ -29,6 +28,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   //To check weather the user is signed in
   void getCurrentUser() async {
+
+
     try {
       final user = await _auth.currentUser;
       if (user != null) {
@@ -85,6 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       _fireStore.collection('messages').add({
                         'text': msgText,
                         'sender': loggedInUser.email,
+                        // 'sender': 'rohit',
                       });
                     },
                     child: Text(
