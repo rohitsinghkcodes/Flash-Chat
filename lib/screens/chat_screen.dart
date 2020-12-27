@@ -50,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         leading: null,
         actions: <Widget>[
           IconButton(
@@ -60,12 +61,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 Navigator.pop(context);
               }),
         ],
+
         title: Center(
           child: Text(
             '⚡️Chat',
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.blue[900],
       ),
       body: SafeArea(
         child: Column(
@@ -78,21 +80,26 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Colors.blue[900],
                     ),
                   );
                 }
                 final messages = snapshot.data.docs;
-                List<Text> messageWidgets = [];
+                List<MsgBubble> messageBubbles = [];
                 for (var msg in messages) {
                   final messageText = msg.data()['text'];
                   final messageSender = msg.data()['sender'];
-                  final messageWidget =
-                      Text('$messageText from $messageSender');
-                  messageWidgets.add(messageWidget);
+                  final messageBubble =
+                      MsgBubble(text: messageText, sender: messageSender);
+
+                  messageBubbles.add(messageBubble);
                 }
-                return Column(
-                  children: messageWidgets,
+                return Expanded(
+                  child: ListView(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                    children: messageBubbles,
+                  ),
                 );
               },
             ),
@@ -116,7 +123,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       _fireStore.collection('messages').add({
                         'text': msgText,
                         'sender': loggedInUser.email,
-                        // 'sender': 'rohit',
                       });
                     },
                     child: Text(
@@ -129,6 +135,40 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MsgBubble extends StatelessWidget {
+  MsgBubble({@required this.text, @required this.sender});
+  final String text;
+  final String sender;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          Text(sender,
+          style: TextStyle(
+            color: Colors.grey[800],
+            fontSize: 12.0,
+          ),),
+          Material(
+            elevation: 5.0,
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.blueAccent[400],
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Text(text,
+                style: TextStyle(fontSize: 15,
+                color: Colors.white),
+
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
